@@ -1,0 +1,4 @@
+name = Custom Site Information
+description = Custom Site Information
+package = Custom
+core = 7.x
