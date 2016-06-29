@@ -3,33 +3,30 @@
 /**
  * Implements hook_menu().
  */
-function custom_site_information_menu()
-{
-    $items = array();
-    $items['page_json/%/%'] = array(
-        'title' => 'Node Json Data',
-        'page callback' => '_page_data_json',
-        'access arguments' => array('access content')
-
-    );
-    return $items;
+function custom_site_information_menu(){
+  $items = array();
+  $items['page_json/%/%'] = array(
+    'title' => 'Node Json Data',
+    'page callback' => '_page_data_json',
+    'access arguments' => array('access content')
+  );
+  return $items;
 }
 
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function custom_site_information_form_system_site_information_settings_alter(&$form, &$form_state, $form_id)
-{
-    $form['site_information']['site_api_key'] = array(
-        '#type' => 'textfield',
-        '#title' => 'Site API Key',
-        '#default_value' => variable_get('siteapikey', ''),
-        '#description' => 'Site Api Key to get the node json data',
-    );
-    if (variable_get('siteapikey', '')) {
-        $form['actions']['submit']['#value'] = "Update Configuration";
-    }
-    $form['#submit'][] = 'custom_site_information_form_submit';
+function custom_site_information_form_system_site_information_settings_alter(&$form, &$form_state, $form_id){
+  $form['site_information']['site_api_key'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Site API Key',
+    '#default_value' => variable_get('siteapikey', ''),
+    '#description' => 'Site Api Key to get the node json data',
+  );
+  if (variable_get('siteapikey', '')) {
+    $form['actions']['submit']['#value'] = "Update Configuration";
+  }
+  $form['#submit'][] = 'custom_site_information_form_submit';
 }
 
 /**
@@ -39,10 +36,9 @@ function custom_site_information_form_system_site_information_settings_alter(&$f
  * add a completion message to the screen when the
  * form successfully processes
  */
-function custom_site_information_form_submit($form, &$form_state)
-{
-    variable_set('siteapikey', $form_state['values']['site_api_key']);
-    drupal_set_message(t('Site API Key has been saved'));
+function custom_site_information_form_submit($form, &$form_state){
+  variable_set('siteapikey', $form_state['values']['site_api_key']);
+  drupal_set_message(t('Site API Key has been saved'));
 }
 
 /**
@@ -52,17 +48,16 @@ function custom_site_information_form_submit($form, &$form_state)
  * check the validity of node id and page content type
  * return json format of node
  */
-function _page_data_json()
-{
-    if (arg(1) !== variable_get('siteapikey')) {
-        return drupal_access_denied();
-    }
-    $node_data = node_load(arg(2));
-    if (empty($node_data)) {
-        return drupal_access_denied();
-    }
-    if ($node_data->type != "page") {
-        return drupal_access_denied();
-    }
-    return drupal_json_output($node_data);
+function _page_data_json(){
+  if (arg(1) !== variable_get('siteapikey')) {
+    return drupal_access_denied();
+  }
+  $node_data = node_load(arg(2));
+  if (empty($node_data)) {
+    return drupal_access_denied();
+  }
+  if ($node_data->type != "page") {
+    return drupal_access_denied();
+  }
+  return drupal_json_output($node_data);
 }
